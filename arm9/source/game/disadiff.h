@@ -1,7 +1,6 @@
 #pragma once
 
 #include "common.h"
-#include "vff.h"
 
 
 // info taken from here:
@@ -139,7 +138,6 @@ typedef struct {
     u8* dpfs_lvl2_cache; // optional, NULL when unused
 } __attribute__((packed)) DisaDiffRWInfo;
 
-void SetDisaDiffFile(FIL* fp); // Pass an already open file. Other calls will ignore path argument if a non-NULL was last passed to this function.
 u32 GetDisaDiffRWInfo(const char* path, DisaDiffRWInfo* info, bool partitionB);
 u32 BuildDisaDiffDpfsLvl2Cache(const char* path, const DisaDiffRWInfo* info, u8* cache, u32 cache_size);
 u32 ReadDisaDiffIvfcLvl4(const char* path, const DisaDiffRWInfo* info, u32 offset, u32 size, void* buffer);
