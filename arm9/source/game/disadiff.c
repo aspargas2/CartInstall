@@ -329,7 +329,6 @@ u32 FixDisaDiffIvfcLevel(const DisaDiffRWInfo* info, u32 level, u32 offset, u32 
     u32 lvl_size = size + offset - lvl_offset; // increase size by the amount starting offset decreased when aligned
     
     if (level != 1) {
-        const u32 next_log = (&(info->log_ivfc_lvl1))[level - 2];
         if (next_offset) *next_offset = (lvl_offset >> log_ivfc_lvl) * 0x20;
         if (next_size) *next_size = ((lvl_size >> log_ivfc_lvl) + (((lvl_size % block_size) == 0) ? 0 : 1)) * 0x20;
     }
