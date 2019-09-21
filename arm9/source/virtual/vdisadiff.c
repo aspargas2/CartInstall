@@ -23,10 +23,8 @@ static VDisaDiffPartitionInfo* partitionA_info = NULL;
 static VDisaDiffPartitionInfo* partitionB_info = NULL;
 
 static void AlignDisaDiffIvfcRange(DisaDiffIvfcRange* range, u32 log_block_size) {
-    ShowPrompt(false, "aligning a range\nofs: 0x%X\nsiz: 0x%X", range->offset, range->size);
     range->offset = (range->offset >> log_block_size) << log_block_size;
     range->size = align(range->size, 1 << log_block_size);
-    ShowPrompt(false, "aligned a range\nofs: 0x%X\nsiz: 0x%X", range->offset, range->size);
 }
 
 static u32 MergeDisaDiffIvfcRange(DisaDiffIvfcRange new_range, DisaDiffIvfcRange* ranges, u32* n_ranges) {
