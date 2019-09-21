@@ -180,8 +180,8 @@ static u32 RemoveBDRIEntry(const BDRIFsHeader* fs_header, const u32 fs_header_of
     if (dummy_entry.max_entry_count != fs_header->max_file_count + 1)
         return 1;
     
-    if ((BDRIWrite(fet_offset + index * sizeof(TdbFileEntry), sizeof(TdbFileEntry), &dummy_entry) != sizeof(DummyFileEntry)) ||
-        (BDRIWrite(fet_offset + 0x28, sizeof(u32), &index) != sizeof(u32)) ||
+    if ((BDRIWrite(fet_offset + index * sizeof(TdbFileEntry), sizeof(TdbFileEntry), &dummy_entry) != FR_OK) ||
+        (BDRIWrite(fet_offset + 0x28, sizeof(u32), &index) != FR_OK) ||
         (BDRIWrite((previous_index == 0) ? det_offset + 0x2C : fet_offset + previous_index * sizeof(TdbFileEntry) + 0xC, sizeof(u32), &(file_entry.next_sibling_index)) != FR_OK))
         return 1;
     
@@ -474,7 +474,7 @@ u32 ReadTicketFromDB(const char* path, const u8* title_id, Ticket* ticket)
     if (te.ticket_size != sizeof(Ticket))
         return 1;
     
-    *ticket = te.ticket;
+    if (ticket) *ticket = te.ticket;
     
     return 0;
 }
