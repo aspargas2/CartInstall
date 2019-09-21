@@ -9,6 +9,7 @@
 #include "sha.h"
 #include "nandcmac.h"
 #include "bdri.h"
+#include "fsinit.h"
 
 // use NCCH crypto defines for everything 
 #define CRYPTO_DECRYPT  NCCH_NOCRYPTO
@@ -2803,24 +2804,38 @@ u32 InstallTicketTieFromTmd(const char* path) {
         return 1;
     }
     
-    if (ReadTicketFromDB(TICKDB_PATH(false), tmd->title_id, NULL) == 0)
-        do_ticket = ShowPrompt(true, "A ticket already exists\nfor the title being installed.\n\nOverwite it with a fake ticket?\nChoosing no will proceed with installation,\nbut keep the current ticket.");
+    if (!InitImgFS(TICKDB_PATH(false))) {
+        free(tmd);
+        return 1;
+    }
+    
+    if (ReadTicketFromDB("D:/partitionA.bin", tmd->title_id, NULL) == 0)
+        do_ticket = ShowPrompt(true, "A ticket already exists\nfor the title being installed.\n\nOverwrite it with a fake ticket?\nChoosing no will proceed with installation,\nbut keep the current ticket.");
     
     if (do_ticket)
     {
         if (BuildFakeTicket(&ticket, tmd->title_id) != 0) {
+            InitImgFS(NULL);
             free(tmd);
             return 1;
         }
         
         // It's fine if this fails, because the ticket may not be there. A better solution than just not checking return would be to return a different code for not finding the entry
-        RemoveTicketFromDB(TICKDB_PATH(false), tmd->title_id);
+        RemoveTicketFromDB("D:/partitionA.bin", tmd->title_id);
         
-        if ((AddTicketToDB(TICKDB_PATH(false), tmd->title_id, &ticket) != 0) || (FixFileCmac(TICKDB_PATH(false)) != 0)) {
+        if (AddTicketToDB("D:/partitionA.bin", tmd->title_id, &ticket) != 0) {
+            InitImgFS(NULL);
             free(tmd);
             return 1;
         }
-    }
+        
+        InitImgFS(NULL);
+        
+        if (FixFileCmac(TICKDB_PATH(false)) != 0) {
+            free(tmd);
+            return 1;
+        }
+    } else InitImgFS(NULL);
     
     memset(&tie, 0, sizeof(TitleInfoEntry));
     
@@ -2867,13 +2882,24 @@ u32 InstallTicketTieFromTmd(const char* path) {
     tie.flags_2[4] = 1;
     strcpy(tie.product_code, ((NcchHeader*)(void*) ncch)->productcode);
     
-    RemoveTitleInfoEntryFromDB(SD_TITLEDB_PATH(false), tmd->title_id);
-    
-    if ((AddTitleInfoEntryToDB(SD_TITLEDB_PATH(false), tmd->title_id, &tie) != 0) || (FixFileCmac(SD_TITLEDB_PATH(false)) != 0)) {
+    if (!InitImgFS(SD_TITLEDB_PATH(false))) {
         free(tmd);
         return 1;
     }
     
+    RemoveTitleInfoEntryFromDB("D:/partitionA.bin", tmd->title_id);
+    
+    if (AddTitleInfoEntryToDB("D:/partitionA.bin", tmd->title_id, &tie) != 0) {
+        InitImgFS(NULL);
+        free(tmd);
+        return 1;
+    }
+    
+    InitImgFS(NULL);
     free(tmd);
+    
+    if (FixFileCmac(SD_TITLEDB_PATH(false)) != 0)
+        return 1;
+    
     return 0;
 }
