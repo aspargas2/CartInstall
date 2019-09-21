@@ -1,4 +1,4 @@
-set PREVIEW_MESSAGE "CartInstall\n \nA fork of d0k3's GodMode9\nby aspargas2"
+set PREVIEW_MESSAGE "CartInstall\n \nA fork of d0k3's GodMode9\nby aspargas2\n \nSee the readme for extended credits"
 set PREVIEW_MODE $[PREVIEW_MESSAGE]
 
 if ask "Would you like to view the readme?"
@@ -18,6 +18,7 @@ end
 
 if not imgmount $[ROM_PATH]
     echo "Unable to mount cartridge image.\nThis should not happen.\nYour cartridge may be corrupted.\nThe system will now power off."
+    poweroff
 end
 
 if not find G:/content0.game.app CONTENT0_PATH
