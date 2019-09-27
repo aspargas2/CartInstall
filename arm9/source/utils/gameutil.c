@@ -2820,10 +2820,7 @@ u32 InstallTicketTieFromTmd(const char* path) {
             return 1;
         }
         
-        // It's fine if this fails, because the ticket may not be there. A better solution than just not checking return would be to return a different code for not finding the entry
-        RemoveTicketFromDB("D:/partitionA.bin", tmd->title_id);
-        
-        if (AddTicketToDB("D:/partitionA.bin", tmd->title_id, &ticket) != 0) {
+        if (AddTicketToDB("D:/partitionA.bin", tmd->title_id, &ticket, true) != 0) {
             InitImgFS(NULL);
             free(tmd);
             return 1;
@@ -2887,9 +2884,7 @@ u32 InstallTicketTieFromTmd(const char* path) {
         return 1;
     }
     
-    RemoveTitleInfoEntryFromDB("D:/partitionA.bin", tmd->title_id);
-    
-    if (AddTitleInfoEntryToDB("D:/partitionA.bin", tmd->title_id, &tie) != 0) {
+    if (AddTitleInfoEntryToDB("D:/partitionA.bin", tmd->title_id, &tie, true) != 0) {
         InitImgFS(NULL);
         free(tmd);
         return 1;
