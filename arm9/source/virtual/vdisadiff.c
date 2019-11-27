@@ -192,7 +192,7 @@ u64 InitVDisaDiffDrive(void) {
         partitionB_info->rw_info = info;
     }
     
-    InitVTickDbDrive();
+    //InitVTickDbDrive();
     
     return type;
 }
