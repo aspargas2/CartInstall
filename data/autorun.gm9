@@ -39,7 +39,7 @@ set CTRNAND 1:
 set SD_DEC  A:
 
 if isdir B:
-    if ask "EmuNAND detected. Would you like to install to EmuNAND instead of SysNAND?"
+    if ask "EmuNAND detected. Would you like to install to\nEmuNAND instead of SysNAND?"
         set CTRNAND 4:
         set SD_DEC  B:
     end
