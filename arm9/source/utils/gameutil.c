@@ -2788,13 +2788,14 @@ u32 BuildCmdTmdFromSDDir(const char* path, bool doCmd, bool doTmd) {
 }
 
 // This function was somewhat based on https://github.com/ihaveamac/gen-title-info-entry/blob/master/gen-title-info-entry.py
-// It currently makes a few assumptions that don't hold true for DLC (!)
+// It currently makes a few assumptions that don't hold true for DLC or nand titles (!)
 u32 InstallTicketTieFromTmd(const char* path) {
     TitleInfoEntry tie;
     Ticket ticket;
     bool do_ticket = true;
     TitleMetaData* tmd = (TitleMetaData*) malloc(TMD_SIZE_MAX);
     TmdContentChunk* content_list = (TmdContentChunk*) (tmd + 1);
+    bool emu = (*path == 'B');
     
     if (!tmd)
         return 1;
@@ -2804,7 +2805,7 @@ u32 InstallTicketTieFromTmd(const char* path) {
         return 1;
     }
     
-    if (!InitImgFS(TICKDB_PATH(false))) {
+    if (!InitImgFS(TICKDB_PATH(emu))) {
         free(tmd);
         return 1;
     }
@@ -2828,7 +2829,7 @@ u32 InstallTicketTieFromTmd(const char* path) {
         
         InitImgFS(NULL);
         
-        if (FixFileCmac(TICKDB_PATH(false)) != 0) {
+        if (FixFileCmac(TICKDB_PATH(emu)) != 0) {
             free(tmd);
             return 1;
         }
@@ -2879,7 +2880,7 @@ u32 InstallTicketTieFromTmd(const char* path) {
     tie.flags_2[4] = 1;
     strcpy(tie.product_code, ((NcchHeader*)(void*) ncch)->productcode);
     
-    if (!InitImgFS(SD_TITLEDB_PATH(false))) {
+    if (!InitImgFS(SD_TITLEDB_PATH(emu))) {
         free(tmd);
         return 1;
     }
@@ -2893,7 +2894,7 @@ u32 InstallTicketTieFromTmd(const char* path) {
     InitImgFS(NULL);
     free(tmd);
     
-    if (FixFileCmac(SD_TITLEDB_PATH(false)) != 0)
+    if (FixFileCmac(SD_TITLEDB_PATH(emu)) != 0)
         return 1;
     
     return 0;

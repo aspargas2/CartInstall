@@ -35,23 +35,33 @@ if not isdir 0:
     end
 end
 
-if not find A:/dbs/title.db TITLEDB
+set CTRNAND 1:
+set SD_DEC  A:
+
+if isdir B:
+    if ask "EmuNAND detected. Would you like to install to EmuNAND instead of SysNAND?"
+        set CTRNAND 4:
+        set SD_DEC  B:
+    end
+end
+
+if not find $[SD_DEC]/dbs/title.db TITLEDB
     echo "title.db in virtual SD data mount does not exist.\nPlease open the eShop or install any SD title,\nthen run CartInstall again."
     poweroff
 end
 
-if not find 1:/dbs/ticket.db TICKDB
+if not find $[CTRNAND]/dbs/ticket.db TICKDB
     echo "ticket.db in CTRNAND does not exist.\nThis should not happen.\nThe system will now power off."
     poweroff
 end
 
-if not allow A:/
+if not allow $[SD_DEC]/
     echo "Write permissions denied.\nThe system will now power off."
     poweroff
 end
 
 fget -e $[CONTENT0_PATH]@118:4 TID_LOW
-set TID_LOW_DIR A:/title/00040000/$[TID_LOW]
+set TID_LOW_DIR $[SD_DEC]/title/00040000/$[TID_LOW]
 set CONTENT_DIR $[TID_LOW_DIR]/content
 
 if isdir $[CONTENT_DIR]
