@@ -9,7 +9,7 @@ This tool is very far from being thouroughly tested, so if you encounter any pro
 ## Usage
 Download `CartInstall.firm` from the [releases page](https://github.com/aspargas2/CartInstall/releases) and run it with the chainloader of your choice.
 
-This tool currently only officially works with SysNAND, but EmuNAND support is planned.
+If you have an EmuNAND, you will be asked which NAND to which you would like to install the game. In the case of multiple EmuNANDs, the first one (i.e. the one that first mounts when you enter GodMode9) will always be used if EmuNAND is selected.
 
 If you somehow manage to install this tool to your firm0, you should first give yourself a solid facepalm. Then put [safeb9sinstaller](https://github.com/d0k3/safeb9sinstaller/releases)'s `.firm` on the sd root as `iderped.firm` and [boot9strap](https://github.com/SciresM/boot9strap/releases)'s `boot9strap.firm` and `boot9strap.firm.sha` in a `boot9strap` folder on the sd root, and boot the console. You should be in safeb9sinstaller, you doofus.
 
